@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        #chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+        .message {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        .user-message {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+            max-width: 80%;
+            border-radius: 12px 12px 0 12px;
+        }
+        .assistant-message {
+            background-color: #e2e3e5;
+            align-self: flex-start;
+            max-width: 80%;
+            border-radius: 12px 12px 12px 0;
+        }
+        .image-response img {
+            max-width: 100%;
+            height: auto;
+            max-height: 500px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        #input-container {
+            display: flex;
+            margin-top: 20px;
+        }
+        #message-input {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        #send-button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #0056b3;
+        }
+        .message p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <div id="chat-window">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div id="input-container">
+            <input type="text" id="message-input" placeholder="Type your message here..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+
+    <script>
+        const chatWindow = document.getElementById('chat-window');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+
+        // Add a message or image to the chat window
+        function addMessage(role, message, imageUrl = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', `${role}-message`);
+
+            // Display text message
+            const textNode = document.createElement('p');
+            textNode.textContent = message;
+            messageDiv.appendChild(textNode);
+
+            // Display image if imageUrl is provided
+            if (imageUrl) {
+                const imageNode = document.createElement('img');
+                imageNode.src = imageUrl;
+                imageNode.alt = "Generated Image";
+                imageNode.classList.add('image-response');
+                messageDiv.appendChild(imageNode);
+            }
+
+            chatWindow.appendChild(messageDiv);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to the bottom
+        }
+
+        // Handle the "Send" button click
+        sendButton.addEventListener('click', async () => {
+            const userMessage = messageInput.value.trim();
+            if (!userMessage) return;
+
+            addMessage('user', userMessage);
+            messageInput.value = '';
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await response.json();
+                if (data.response) {
+                    addMessage('assistant', data.response, data.imageurl || null);
+                } else {
+                    addMessage('assistant', 'Error: Unable to get a response.');
+                }
+            } catch (error) {
+                addMessage('assistant', 'Error: Something went wrong.');
+            }
+        });
+
+        // Press Enter to send a message
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendButton.click();
+        });
+    </script>
+</body>
+</html>
