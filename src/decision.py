@@ -72,6 +72,7 @@ def analyze_image(text):
         # If the model detects that an image is needed, it will provide a description for image generation
         marker = "**Generate an image of**:"
         if marker in analysis_reply:
+            
             # Extract description after the marker
             description = analysis_reply.split(marker, 1)[1].strip()
             return description

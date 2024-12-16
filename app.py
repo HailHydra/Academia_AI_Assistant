@@ -16,7 +16,6 @@ def chat():
     # Get the assistant's reply and optional image URL
     result = handle_prompt(user_input)
 
-    # Prepare the JSON response
     response = {
         "response": result["response"]
     }

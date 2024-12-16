@@ -3,86 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chatbot</title>
+    <title>Learning Bot</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f7f9fc;
+            color: #2d3748;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
         #chat-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            max-height: 80vh;
-        }
-        .message {
-            margin: 15px 0;
-            padding: 10px;
-            border-radius: 8px;
+            width: 95%;
+            max-width: 800px;
+            height: 85%;
             display: flex;
             flex-direction: column;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
         }
+
+        #chat-header {
+            background: #3182ce;
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            position: relative;
+        }
+
+        #chat-header .tagline {
+            font-size: 14px;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+
+        #chat-window {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f7f9fc;
+            scroll-behavior: smooth;
+        }
+
+        .message-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 75%;
+            padding: 12px 16px;
+            font-size: 15px;
+            border-radius: 12px;
+            line-height: 1.6;
+            word-wrap: break-word;
+            animation: fadeIn 0.3s ease-out;
+            position: relative;
+        }
+
         .user-message {
-            background-color: #d1e7dd;
-            align-self: flex-end;
-            max-width: 80%;
+            margin-left: auto;
+            background: #3182ce;
+            color: #ffffff;
             border-radius: 12px 12px 0 12px;
         }
+
         .assistant-message {
-            background-color: #e2e3e5;
-            align-self: flex-start;
-            max-width: 80%;
+            background: #edf2f7;
+            color: #2d3748;
             border-radius: 12px 12px 12px 0;
+            position: relative;
+            padding-bottom: 10px; /* Space for the image */
+            max-width: 90%; /* Limit size of chat bubble */
+            word-wrap: break-word; /* Allow text to break in the bubble */
+            padding: 15px; /* Increased padding */
+            margin-bottom: 15px; /* Added space between assistant responses */
         }
+
+        .assistant-icon {
+            width: 30px;
+            height: 30px;
+            flex-shrink: 0;
+            background-color: #3182ce; /* Set background color */
+            color: #fff; /* White color for the letter */
+            border-radius: 50%; /* Make it circular */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px; /* Adjust font size */
+            font-weight: bold; /* Make the letter bold */
+        }
+
         .image-response img {
-            max-width: 100%;
-            height: auto;
-            max-height: 500px;
+            max-width: 100%; /* Ensure the image fits inside */
+            max-height: 300px; /* Limit height to avoid overflow */
+            width: auto;       /* Maintain aspect ratio */
+            height: auto;      /* Maintain aspect ratio */
             border-radius: 8px;
-            margin-top: 10px;
+            object-fit: contain; /* Keep the image's aspect ratio intact */
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
+
         #input-container {
             display: flex;
-            margin-top: 20px;
+            padding: 15px 20px;
+            background: #edf2f7;
+            border-top: 1px solid #e2e8f0;
         }
+
         #message-input {
             flex: 1;
-            padding: 10px;
+            padding: 12px 15px;
             font-size: 16px;
-            border: 1px solid #ccc;
+            border: 1px solid #cbd5e0;
             border-radius: 8px;
+            background: #ffffff;
+            color: #2d3748;
+            outline: none;
         }
+
+        #message-input:focus {
+            border-color: #3182ce;
+            box-shadow: 0px 0px 4px rgba(49, 130, 206, 0.4);
+        }
+
         #send-button {
-            margin-left: 10px;
             padding: 10px 20px;
+            margin-left: 10px;
             font-size: 16px;
-            background-color: #007bff;
-            color: white;
+            background: #3182ce;
+            color: #ffffff;
             border: none;
             border-radius: 8px;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
+
         #send-button:hover {
-            background-color: #0056b3;
+            background: #2b6cb0;
         }
-        .message p {
-            margin: 0;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading-message {
+            background-color: #f7f9fc; /* Same background color as the chat window */
+            color: #888;
+            text-align: left;
+            font-style: italic;
+            padding: 10px 20px;
+            border-radius: 12px;
+            margin-top: 10px;
+            width: 70%; /* Limit width */
+            display: flex;
+            align-items: center;
+            box-shadow: none; /* Removed any shadow */
+            margin-bottom: 0; /* No extra margin */
+        }
+
+        .loading-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+        }
+
+        /* Slightly reduced space between the icon and the typing text */
+        .loading-message .assistant-icon {
+            margin-right: 15px; /* Slightly reduced space */
+        }
+
+        /* Slightly reduced space between icon and message in assistant message */
+        .assistant-message .assistant-icon {
+            margin-right: 15px; /* Slightly reduced space */
         }
     </style>
 </head>
 <body>
     <div id="chat-container">
-        <div id="chat-window">
-            <!-- Chat messages will appear here -->
+        <div id="chat-header">
+            <div>Academia AI Assistant</div>
+            <div class="tagline">Your AI-powered learning companion</div>
         </div>
+
+        <div id="chat-window">
+            <!-- Chat messages will dynamically populate here -->
+        </div>
+
         <div id="input-container">
-            <input type="text" id="message-input" placeholder="Type your message here..." />
+            <input type="text" id="message-input" placeholder="Type your question here..." />
             <button id="send-button">Send</button>
         </div>
     </div>
@@ -92,36 +243,60 @@
         const messageInput = document.getElementById('message-input');
         const sendButton = document.getElementById('send-button');
 
-        // Add a message or image to the chat window
+        // Add a message to the chat window
         function addMessage(role, message, imageUrl = null) {
+            const messageContainer = document.createElement('div');
+            messageContainer.classList.add('message-container');
+
+            if (role === 'assistant') {
+                const iconNode = document.createElement('div');
+                iconNode.classList.add('assistant-icon');
+                iconNode.textContent = 'A'; // The icon text
+                messageContainer.appendChild(iconNode);
+            }
+
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', `${role}-message`);
+            messageDiv.textContent = message;
 
-            // Display text message
-            const textNode = document.createElement('p');
-            textNode.textContent = message;
-            messageDiv.appendChild(textNode);
-
-            // Display image if imageUrl is provided
             if (imageUrl) {
                 const imageNode = document.createElement('img');
                 imageNode.src = imageUrl;
-                imageNode.alt = "Generated Image";
+                imageNode.alt = "Response Image";
                 imageNode.classList.add('image-response');
                 messageDiv.appendChild(imageNode);
             }
 
-            chatWindow.appendChild(messageDiv);
-            chatWindow.scrollTop = chatWindow.scrollHeight; // Scroll to the bottom
+            messageContainer.appendChild(messageDiv);
+            chatWindow.appendChild(messageContainer);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll
         }
 
-        // Handle the "Send" button click
+        // Show the "assistant is typing..." message without the icon
+        function showLoading() {
+            const loadingMessage = document.createElement('div');
+            loadingMessage.classList.add('loading-message');
+            
+            loadingMessage.appendChild(document.createTextNode('Assistant is typing...'));
+
+            chatWindow.appendChild(loadingMessage);
+            chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll
+        }
+
+        // Remove the "assistant is typing..." message
+        function removeLoading() {
+            const loadingMessages = document.querySelectorAll('.loading-message');
+            loadingMessages.forEach(msg => msg.remove());
+        }
+
         sendButton.addEventListener('click', async () => {
             const userMessage = messageInput.value.trim();
             if (!userMessage) return;
 
             addMessage('user', userMessage);
             messageInput.value = '';
+
+            showLoading(); // Show loading message
 
             try {
                 const response = await fetch('/chat', {
@@ -131,17 +306,19 @@
                 });
 
                 const data = await response.json();
+                removeLoading(); // Remove loading message
+
                 if (data.response) {
                     addMessage('assistant', data.response, data.imageurl || null);
                 } else {
                     addMessage('assistant', 'Error: Unable to get a response.');
                 }
             } catch (error) {
+                removeLoading(); // Remove loading message
                 addMessage('assistant', 'Error: Something went wrong.');
             }
         });
 
-        // Press Enter to send a message
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendButton.click();
         });

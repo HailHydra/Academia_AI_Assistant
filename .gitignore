@@ -1,7 +1,7 @@
 # Build directories
 build/
 dist/
-Mentor_Bot.egg-info/
+Academia_AI_Assistant.egg-info/
 
 # Python cache directories
 **/__pycache__/
