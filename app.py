@@ -5,7 +5,6 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 
 @app.route('/')
 def index():
-    # Render the main HTML page
     return render_template('index.html')
 
 @app.route('/chat', methods=['POST'])

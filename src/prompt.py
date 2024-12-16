@@ -25,6 +25,7 @@ Always adapt your teaching to the user's learning style and provide images or wr
 }
 
 def handle_prompt(user_input):
+    
     global session_memory
 
     # Add user input to session memory

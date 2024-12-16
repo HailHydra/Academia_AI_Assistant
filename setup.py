@@ -7,8 +7,8 @@ setup(
     author_email='darklususnaturae@gmail.com',
     install_requires=[
         'openai',
+        'flask',
         'setuptools',
-        'flask'
     ],
     packages=find_packages()
 )

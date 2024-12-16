@@ -75,6 +75,7 @@ def analyze_image(text):
             
             # Extract description after the marker
             description = analysis_reply.split(marker, 1)[1].strip()
+            # Return the description for generating the image
             return description
         
         # If no image is needed, return None

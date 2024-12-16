@@ -5,7 +5,7 @@ client = OpenAI()
 def create_images(prompt):
 
     response = client.images.generate(
-        model="dall-e-2",
+        model="dall-e-3",
         prompt=prompt,
         size="1024x1024",
         quality="standard",
